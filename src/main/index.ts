@@ -2,14 +2,16 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { createFileRoute, createURLRoute } from 'electron-router-dom'
-
+import './ipc'
+import './store'
+import { createTray } from './tray'
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1120,
     height: 700,
     show: false,
     autoHideMenuBar: true,
-    backgroundColor: '#0b2527',
+    backgroundColor: '#232d38',
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: {
       x: 20,
@@ -17,11 +19,11 @@ function createWindow(): void {
     },
     ...(process.platform === 'linux' ? {} : {}),
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/index.mjs'),
       sandbox: false,
     },
   })
-
+  createTray(mainWindow)
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -47,7 +49,6 @@ function createWindow(): void {
 
 if (process.platform === 'darwin') {
   const appIcon = path.join(__dirname, '../../resources/icon.png')
-
   app.dock.setIcon(appIcon)
 }
 
