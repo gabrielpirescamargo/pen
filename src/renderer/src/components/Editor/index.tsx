@@ -37,13 +37,14 @@ export function Editor({ content, onContentUpdated }: EditorProps) {
 
       const parsedContent = editor.getHTML().match(regex)?.groups
 
-      const title = parsedContent.title ?? 'Untitled'
-      const content = parsedContent.content ?? ''
+      const title = parsedContent?.title ?? 'Untitled'
+      const content = parsedContent?.content ?? ''
       console.log(parsedContent)
       console.log(editor.getHTML())
       onContentUpdated({
         title,
         content,
+        //@ts-ignore
         editorJSON: editor.getJSON(),
       })
     },

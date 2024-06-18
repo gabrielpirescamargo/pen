@@ -4,6 +4,7 @@ import { Document } from '@shared/types/ipc'
 
 interface StoreType {
   documents: Record<string, Document>
+
 }
 
 export const store = new Store<StoreType>({
@@ -12,4 +13,3 @@ export const store = new Store<StoreType>({
   },
 })
 
-console.log(store.path)

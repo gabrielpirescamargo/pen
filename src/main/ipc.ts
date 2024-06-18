@@ -18,6 +18,8 @@ ipcMain.handle(
   IPC.DOCUMENTS.FETCH_ALL,
   async (): Promise<FetchAllDocumentsResponse> => {
     return {
+      // @ts-ignore
+
       data: Object.values(store.get('documents')),
     }
   },
@@ -26,6 +28,8 @@ ipcMain.handle(
 ipcMain.handle(
   IPC.DOCUMENTS.FETCH,
   async (_, { id }: FetchDocumentRequest): Promise<FetchDocumentResponse> => {
+    // @ts-ignore
+
     const document = store.get(`documents.${id}`) as Document
 
     return {
@@ -44,6 +48,8 @@ ipcMain.handle(
       title: 'Untitled',
     }
     console.log('CREATE')
+    // @ts-ignore
+
     store.set(`documents.${id}`, document)
 
     return {
@@ -55,6 +61,8 @@ ipcMain.handle(
 ipcMain.handle(
   IPC.DOCUMENTS.SAVE,
   async (_, { id, title, content }: SaveDocumentRequest): Promise<void> => {
+    // @ts-ignore
+
     store.set(`documents.${id}`, {
       id,
       title,
@@ -66,6 +74,8 @@ ipcMain.handle(
 ipcMain.handle(
   IPC.DOCUMENTS.DELETE,
   async (_, { id }: DeleteDocumentRequest): Promise<void> => {
+    // @ts-ignore
+
     store.delete(`documents.${id}`)
   },
 )

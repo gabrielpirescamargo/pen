@@ -11,6 +11,7 @@ export function CreatePage() {
   const { isPending: isCreatingNewDocument, mutateAsync: createDocument } =
     useMutation({
       mutationFn: async () => {
+        //@ts-ignore
         const response = await window.api.createDocument()
 
         return response.data
@@ -30,6 +31,7 @@ export function CreatePage() {
     function onNewDocument() {
       createDocument()
     }
+    //@ts-ignore
     const unsubscribe = window.api.onNewDocumentRequest(onNewDocument)
 
     return () => {

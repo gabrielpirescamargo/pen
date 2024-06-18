@@ -1,26 +1,49 @@
+import { useQuery } from '@tanstack/react-query'
 import { Command } from 'cmdk'
 import { File, MagnifyingGlass } from 'phosphor-react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-export function SearchBar() {
-  const [open, setOpen] = useState(false)
+interface SearchBarProps {
+  open: boolean
+  onOpenChange: (isOpen: boolean) => void
+}
 
+export function SearchBar({ open, onOpenChange }: SearchBarProps) {
+  const navigate = useNavigate()
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && e.metaKey) {
-        setOpen((state) => !state)
+        onOpenChange(!open)
       }
     }
 
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
-  }, [setOpen])
+  }, [onOpenChange, open])
 
+  //@ts-ignore
+
+
+  const { data }: any = useQuery({
+    queryKey: ['documents'],
+    queryFn: async () => {
+      //@ts-ignore
+      const response = await window.api.fetchDocuments()
+      return response.data
+    },
+  })
+
+
+  const handleOpenDocument = (documentId: any) => {
+    navigate(`/documents/${documentId}`)
+    onOpenChange(false)
+  }
   return (
     <Command.Dialog
       className="fixed top-24 left-1/2 -translate-x-1/2 w-[480px] max-w-full bg-pen-800 rounded-md shadow-2xl text-pen-100 border border-pen-600"
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       label="Search"
     >
       <div className="flex items-center gap-2 border-b border-pen-700 p-4">
@@ -36,25 +59,19 @@ export function SearchBar() {
           Nenhum documento encontrado.
         </Command.Empty>
 
-        <Command.Item className="py-3 px-4 text-pen-50 text-sm flex items-center gap-2 hover:bg-pen-700 aria-selected:!bg-pen-600">
-          <File className="w-4 h-4" />
-          Untitled
-        </Command.Item>
 
-        <Command.Item className="py-3 px-4 text-pen-50 text-sm flex items-center gap-2 hover:bg-pen-700 aria-selected:!bg-pen-600">
-          <File className="w-4 h-4" />
-          Ignite
-        </Command.Item>
-
-        <Command.Item className="py-3 px-4 text-pen-50 text-sm flex items-center gap-2 hover:bg-pen-700 aria-selected:!bg-pen-600">
-          <File className="w-4 h-4" />
-          Discover
-        </Command.Item>
-
-        <Command.Item className="py-3 px-4 text-pen-50 text-sm flex items-center gap-2 hover:bg-pen-700 aria-selected:!bg-pen-600">
-          <File className="w-4 h-4" />
-          Rocketseat
-        </Command.Item>
+        {data?.map((document: any) => {
+          return (
+            <Command.Item
+              key={document.id}
+              onSelect={() => handleOpenDocument(document.id)}
+              className="py-3 px-4 text-pen-50 text-sm flex items-center gap-2 hover:bg-pen-700 aria-selected:!bg-pen-600"
+            >
+              <File className="w-4 h-4" />
+              {document.title}
+            </Command.Item>
+          )
+        })}
       </Command.List>
     </Command.Dialog>
   )

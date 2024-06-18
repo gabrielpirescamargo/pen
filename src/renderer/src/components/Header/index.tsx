@@ -3,7 +3,7 @@ import { Code, CaretDoubleRight, TrashSimple } from 'phosphor-react'
 import * as Breadcrumbs from './Breadcrumbs'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient } from '../../lib/react-query'
 import { Document } from '@/shared/types/ipc'
 
@@ -16,6 +16,7 @@ export function Header({ isSidebarOpen }: Header) {
   const navigate = useNavigate()
   const { mutateAsync: deleteDocument } = useMutation({
     mutationFn: async () => {
+      //@ts-ignore
       await window.api.deleteDocument({ id: id! })
     },
     onSuccess: () => {
@@ -23,6 +24,17 @@ export function Header({ isSidebarOpen }: Header) {
         return documents.filter((document) => document.id !== id)
       })
       navigate('/')
+    },
+  })
+
+
+  const { data, isFetching } = useQuery({
+    queryKey: ['document', id],
+    queryFn: async () => {
+      //@ts-ignore
+      const response = await window.api.fetchDocument({ id: id! })
+
+      return response.data
     },
   })
   return (
@@ -51,14 +63,14 @@ export function Header({ isSidebarOpen }: Header) {
           <Breadcrumbs.Root>
             <Breadcrumbs.Item>
               <Code weight="bold" className="h-4 w-4 text-pink-500" />
-              Estrutura técnica
+              Estudos
             </Breadcrumbs.Item>
-            <Breadcrumbs.Separator />
+            {/* <Breadcrumbs.Separator />
             <Breadcrumbs.HiddenItems />
+            <Breadcrumbs.Separator /> */}
+            {/* <Breadcrumbs.Item>Back-end</Breadcrumbs.Item> */}
             <Breadcrumbs.Separator />
-            <Breadcrumbs.Item>Back-end</Breadcrumbs.Item>
-            <Breadcrumbs.Separator />
-            <Breadcrumbs.Item isActive>Untitled</Breadcrumbs.Item>
+            <Breadcrumbs.Item isActive>{data?.title}</Breadcrumbs.Item>
           </Breadcrumbs.Root>
 
           <div className="inline-flex region-no-drag">

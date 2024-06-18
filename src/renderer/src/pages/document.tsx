@@ -7,11 +7,12 @@ import { Document as DocType } from '@/shared/types/ipc'
 export function Document() {
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
-  const [htmlTags, setHtmlTags] = useState({})
+  const [htmlTags, setHtmlTags] = useState<any>({})
 
   const { data, isFetching } = useQuery({
     queryKey: ['document', id],
     queryFn: async () => {
+      //@ts-ignore
       const response = await window.api.fetchDocument({ id: id! })
 
       return response.data
@@ -20,6 +21,7 @@ export function Document() {
 
   const { mutateAsync: saveDocument } = useMutation({
     mutationFn: async ({ title, content }: onContentUpdatedParams) => {
+      //@ts-ignore
       await window.api.saveDocument({
         id: id!,
         title,
@@ -48,10 +50,10 @@ export function Document() {
   function handleEditorContentUpdated({
     title,
     content,
+    //@ts-ignore
     editorJSON,
   }: onContentUpdatedParams) {
     saveDocument({ title, content })
-    console.log(editorJSON)
     setHtmlTags(editorJSON)
   }
 
@@ -64,7 +66,8 @@ export function Document() {
         </span>
 
         <ToC.Root>
-          {htmlTags?.content?.map((tag) => {
+
+          {htmlTags?.content?.map((tag: any) => {
             if (tag?.type === 'heading' && tag.attrs.level === 1) {
               return <ToC.Link>{tag?.content?.[0]?.text}</ToC.Link>
             }

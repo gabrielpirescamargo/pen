@@ -13,11 +13,11 @@ export function Sidebar() {
   const { data } = useQuery({
     queryKey: ['documents'],
     queryFn: async () => {
+      //@ts-ignore
       const response = await window.api.fetchDocuments()
       return response.data
     },
   })
-  console.log(data)
   return (
     <Collapsible.Content className="bg-pen-800 flex-shrink-0 border-r border-pen-600 h-screen relative group data-[state=open]:animate-slideIn data-[state=closed]:animate-slideOut overflow-hidden">
       <Collapsible.Trigger
@@ -54,7 +54,8 @@ export function Sidebar() {
           <Navigation.Section>
             <Navigation.SectionTitle>Workspace</Navigation.SectionTitle>
             <Navigation.SectionContent>
-              {data?.map((document) => {
+
+              {data?.map((document: any) => {
                 return (
                   <Navigation.Link
                     to={`/documents/${document.id}`}

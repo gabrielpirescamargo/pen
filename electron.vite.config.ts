@@ -11,7 +11,7 @@ export default defineConfig({
   main: {
     plugins: [tsconfigPaths, externalizeDepsPlugin()],
 
-    // publicDir: path.resolve('resources'),
+    publicDir: path.resolve('resources'),
   },
   preload: {
     plugins: [tsconfigPaths, externalizeDepsPlugin()],

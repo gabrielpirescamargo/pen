@@ -6,7 +6,7 @@ export function createTray(window: BrowserWindow) {
   )
   const tray = new Tray(icon)
   const menu = Menu.buildFromTemplate([
-    { label: 'Pen', enabled: false },
+    { label: 'Keynotes', enabled: false },
     {
       type: 'separator',
     },
@@ -42,7 +42,7 @@ export function createTray(window: BrowserWindow) {
       type: 'separator',
     },
     {
-      label: 'Sair do Pen',
+      label: 'Sair do Keynotes',
       role: 'quit',
     },
   ])
